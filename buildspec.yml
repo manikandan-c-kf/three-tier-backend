@@ -55,4 +55,3 @@ artifacts:
 cache:
   paths:
     - vendor/**/*
-Z
