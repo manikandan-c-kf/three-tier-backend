@@ -19,8 +19,6 @@ phases:
           echo "php-build plugin already installed.";
         fi
 
-      - phpenv install --list
-
       - phpenv install 8.1.0
       - phpenv global 8.1.0
       - phpenv rehash
