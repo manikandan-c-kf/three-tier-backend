@@ -24,14 +24,12 @@ phases:
       - phpenv global 8.1.0
       - phpenv rehash
 
-      # Disable OPcache and increase memory limit
+      # Disable OPcache and increase memory limit in php.ini
       - echo "Disabling OPcache and increasing memory limit..."
       - echo "opcache.enable=0" >> /etc/php.ini
-      - echo "zend_extension=opcache.so" >> /etc/php.ini
-      - echo "opcache.enable=0" >> /etc/php.d/10-opcache.ini
-      - echo "memory_limit = 1G" >> /etc/php.ini
+      - echo "memory_limit=1G" >> /etc/php.ini
 
-      # Add swap memory
+      # Add swap memory to prevent memory issues
       - sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
       - sudo mkswap /swapfile
       - sudo swapon /swapfile
