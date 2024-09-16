@@ -13,7 +13,8 @@ phases:
       - eval "$(phpenv init -)"
 
       - echo Checking for php-build plugin...
-      - if [ ! -d "$HOME/.phpenv/plugins/php-build" ]; then
+      - |
+        if [ ! -d "$HOME/.phpenv/plugins/php-build" ]; then
           git clone https://github.com/php-build/php-build.git ~/.phpenv/plugins/php-build;
         else
           echo "php-build plugin already installed.";
