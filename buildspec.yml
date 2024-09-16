@@ -34,6 +34,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing Docker image to ECR...
+      - echo aws ecr get-login-password --region $AWS_DEFAULT_REGION
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
       - docker build -t $REPOSITORY_URI:latest .
       - docker push $REPOSITORY_URI:latest
