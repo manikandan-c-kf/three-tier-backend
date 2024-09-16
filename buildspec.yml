@@ -4,36 +4,36 @@ phases:
   install:
     commands:
       - echo Installing Composer...
-      - curl -sS https://getcomposer.org/installer | php
-      - php composer.phar install
+      - composer install
 
-      - echo Installing phpenv and PHP 8.1.0...
-      - curl -fsSL https://github.com/phpenv/phpenv-installer/raw/master/bin/phpenv-install | bash
-      - export PATH="$HOME/.phpenv/bin:$PATH"
-      - eval "$(phpenv init -)"
-
-      - echo Checking for php-build plugin...
+      - echo Checking for PHP 8.1.0...
       - |
-        if [ ! -d "$HOME/.phpenv/plugins/php-build" ]; then
-          git clone https://github.com/php-build/php-build.git ~/.phpenv/plugins/php-build;
+        if [ $(php -v | grep -c 'PHP 8.1') -eq 0 ]; then
+          echo Installing PHP 8.1.0 via phpenv...
+          curl -fsSL https://github.com/phpenv/phpenv-installer/raw/master/bin/phpenv-install | bash
+          export PATH="$HOME/.phpenv/bin:$PATH"
+          eval "$(phpenv init -)"
+          if [ ! -d "$HOME/.phpenv/plugins/php-build" ]; then
+            git clone https://github.com/php-build/php-build.git ~/.phpenv/plugins/php-build;
+          fi
+          phpenv install 8.1.0
+          phpenv global 8.1.0
+          phpenv rehash
         else
-          echo "php-build plugin already installed.";
+          echo "PHP 8.1 already installed."
         fi
 
-      - phpenv install 8.1.0
-      - phpenv global 8.1.0
-      - phpenv rehash
   build:
     commands:
       - echo Build started on `date`
       - php artisan config:cache
       - php artisan route:cache
       - php artisan view:cache
+
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing Docker image to ECR...
-      - echo aws ecr get-login-password --region $AWS_DEFAULT_REGION
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
       - docker build -t $REPOSITORY_URI:latest .
       - docker push $REPOSITORY_URI:latest
