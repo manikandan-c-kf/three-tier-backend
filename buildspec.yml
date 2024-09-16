@@ -38,6 +38,7 @@ phases:
       - docker build -t $REPOSITORY_URI:latest .
       - docker push $REPOSITORY_URI:latest
       - printf '[{"name":"backend-repo","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+      - cat imagedefinitions.json
 
 artifacts:
   files:
