@@ -29,14 +29,18 @@ phases:
       - echo "opcache.enable=0" >> /etc/php.ini
       - echo "memory_limit=1G" >> /etc/php.ini
 
+  pre_build:
+    commands:
+      - composer install
+      - echo "Running pre-build commands"
+      - cp .env.example .env # Copy environment file
+      - php artisan key:generate # Generate application key
+      - echo "Pre-build commands completed"
+
   build:
     commands:
       - echo Build started on `date`
-      - composer install
       - php artisan config:clear
-      - php artisan config:cache
-      - php artisan route:cache
-      - php artisan view:cache
 
   post_build:
     commands:
