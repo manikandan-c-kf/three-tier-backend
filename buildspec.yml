@@ -29,11 +29,6 @@ phases:
       - echo "opcache.enable=0" >> /etc/php.ini
       - echo "memory_limit=1G" >> /etc/php.ini
 
-      # Add swap memory to prevent memory issues
-      - sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
-      - sudo mkswap /swapfile
-      - sudo swapon /swapfile
-
   build:
     commands:
       - echo Build started on `date`
