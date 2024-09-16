@@ -8,6 +8,12 @@ phases:
       - echo Installing Composer...
       - curl -sS https://getcomposer.org/installer | php
       - php composer.phar install
+      - curl -fsSL https://github.com/phpenv/phpenv-installer/raw/master/bin/phpenv-install | bash
+      - export PATH="$HOME/.phpenv/bin:$PATH"
+      - eval "$(phpenv init -)"
+      - phpenv install 8.1
+      - phpenv global 8.1
+      - phpenv rehash
   build:
     commands:
       - echo Build started on `date`
@@ -31,4 +37,3 @@ artifacts:
 cache:
   paths:
     - vendor/**/*
-
