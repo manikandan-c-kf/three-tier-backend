@@ -2,11 +2,11 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      php: 8.1.0
+    # runtime-versions:
+      # php: 8.1.0
     commands:
       - echo "Installing PHP dependencies..."
-      - composer install --no-interaction --prefer-dist --optimize-autoloader
+      #- composer install --no-interaction --prefer-dist --optimize-autoloader
 
   pre_build:
     commands:
