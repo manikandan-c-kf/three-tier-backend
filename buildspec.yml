@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Installing Composer...
       - curl -sS https://getcomposer.org/installer | php
-      - php composer.phar install --no-scripts
+      - php composer.phar install --no-scripts --no-plugins
 
       - echo Installing phpenv and PHP 8.1.0...
       - curl -fsSL https://github.com/phpenv/phpenv-installer/raw/master/bin/phpenv-install | bash
@@ -26,12 +26,19 @@ phases:
 
       # Disable OPcache and increase memory limit in php.ini
       - echo "Disabling OPcache and increasing memory limit..."
-      - echo "opcache.enable=0" >> /etc/php.ini
-      - echo "memory_limit=1G" >> /etc/php.ini
+      - echo "opcache.enable=0" >> /etc/php.d/10-opcache.ini
+      - echo "memory_limit=2G" >> /etc/php.ini
+
+      # Enable swap memory
+      - sudo fallocate -l 2G /swapfile
+      - sudo chmod 600 /swapfile
+      - sudo mkswap /swapfile
+      - sudo swapon /swapfile
 
   pre_build:
     commands:
-      - composer install
+      - composer clear-cache
+      - composer install --prefer-dist --no-scripts --no-plugins
       - echo "Running pre-build commands"
       - cp .env.example .env # Copy environment file
       - php artisan key:generate # Generate application key
