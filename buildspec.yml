@@ -3,6 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
+      - sudo mount -t tmpfs -o size=1G tmpfs /mnt
       - echo "Installing Composer..."
       - curl -sS https://getcomposer.org/installer | php
       - php composer.phar install --no-scripts
@@ -34,7 +35,7 @@ phases:
       - echo "memory_limit=2G" >> $php_ini_path
 
       # Enable swap memory
-      - sudo fallocate -l 2G /swapfile
+      - sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
       - sudo chmod 600 /swapfile
       - sudo mkswap /swapfile
       - sudo swapon /swapfile
@@ -42,7 +43,7 @@ phases:
   pre_build:
     commands:
       - composer clear-cache
-      - composer install --prefer-dist --no-scripts --no-plugins
+      - composer install --no-dev --no-progress --prefer-dist
       - echo "Running pre-build commands"
       - cp .env.example .env # Copy environment file
       - php artisan key:generate # Generate application key
@@ -71,3 +72,6 @@ artifacts:
 cache:
   paths:
     - vendor/**/*
+
+resources:
+  computeType: BUILD_GENERAL1_LARGE
