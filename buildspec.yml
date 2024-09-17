@@ -10,37 +10,34 @@ phases:
 
   pre_build:
     commands:
-      - echo "Running migrations or any pre-build tasks if needed"
-      - php artisan key:generate
-      - php artisan migrate --force
+      - echo Build completed on `date`
+      - echo Pushing Docker image to ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker push $REPOSITORY_URI:latest
+      - printf '[{"name":"backend-repo","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+      - cat imagedefinitions.json
 
   build:
     commands:
       - echo "Preparing application for deployment..."
-      - php artisan config:cache
-      - php artisan route:cache
-      - php artisan view:cache
+      # - php artisan config:cache
+      # - php artisan route:cache
+      # - php artisan view:cache
 
   post_build:
     commands:
       - echo "Running any additional tasks after the build"
-      - php artisan test
+      # - php artisan test
 
 artifacts:
   files:
-    - vendor/**
-    - app/**
-    - bootstrap/**
-    - config/**
-    - database/**
-    - public/**
-    - resources/**
-    - routes/**
-    - storage/**
-    - composer.json
-    - composer.lock
-    - .env.example
-    - artisan
+    - '**/*'
+    - imagedefinitions.json
+
+cache:
+  paths:
+    - vendor/**/*
 
 cache:
   paths:
