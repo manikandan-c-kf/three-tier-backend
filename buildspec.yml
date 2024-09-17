@@ -3,7 +3,6 @@ version: 0.2
 phases:
   install:
     commands:
-      - sudo mount -t tmpfs -o size=1G tmpfs /mnt
       - echo "Installing Composer..."
       - curl -sS https://getcomposer.org/installer | php
       - php composer.phar install --no-scripts
